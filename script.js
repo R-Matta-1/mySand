@@ -10,6 +10,18 @@ canvas.width = maxX;
 canvas.height = maxY;
 ctx.fillRect(100, 100, 100, 100)
 
+class particle {
+
+    constructor() {
+
+
+    }
+
+
+
+
+}
+
 
 for (let i = 0; i <= maxX; i+= maxX/5) {
     ctx.fillRect(i,50,25,25)
