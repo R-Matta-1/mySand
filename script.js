@@ -2,14 +2,6 @@ const particleSize = 5;
 const maxX = 1000 - particleSize;
 const maxY = 500 - particleSize;
 
-function getRandomColor() {
-    var letters = '0123456789ABCDEF';
-    var color = '#';
-    for (var i = 0; i < 6; i++) {
-        color += letters[Math.floor(Math.random() * 16)];
-    }
-    return color;
-}
 
 var canvas = document.getElementById("c")
 var ctx = canvas.getContext("2d");
@@ -43,19 +35,44 @@ class particle {
         ctx.fillRect(this.x*particleSize,this.y*particleSize,particleSize,particleSize)
     }
 }
-particles = [];
+//initalizing the particles
+var particles = [];
 for (let x = 0;  x< (maxX / particleSize); x++) {
     particles.push([]);
 
     for (let y = 0; y < (maxY / particleSize); y++) {
-        particles[x].push(new particle(x, y, getRandomColor(), "empty"))
+        particles[x].push(new particle(x, y, "black", "empty"))
     }
 }
 console.log(particles.length);
 
 
-for (let x = 0; x < particles.length; x++) {
-    for (let y = 0; y < particles[x].length; y++) {
-        particles[x][y].draw();
+
+function drawScreen() {
+    ctx.fillStyle = "black";
+    ctx.clearRect(0,0,maxX,maxY)
+    for (let x = 0; x < particles.length; x++) {
+        for (let y = 0; y < particles[x].length; y++) {
+            particles[x][y].draw();
+        }
     }
 }
+
+function updateScreen() {
+    for (let x = 0; x < particles.length; x++) {
+        for (let y = 0; y < particles[x].length; y++) {
+            particles[x][y].act();
+        }
+    }
+}
+
+function tick() {
+
+    updateScreen()
+
+    drawScreen();
+
+    requestAnimationFrame(tick)
+}
+
+tick();
