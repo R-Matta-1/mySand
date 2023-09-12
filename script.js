@@ -23,7 +23,7 @@ class particle {
 
     constructor(x,y,color,type) {
         this.x = x;
-        this.y = y;
+        this.y = y;//AAAAA
         this.color = color;
         this.type = type;
     }
