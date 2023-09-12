@@ -3,6 +3,7 @@ const maxX = 1000 - particleSize;
 const maxY = 500 - particleSize;
 
 
+
 var canvas = document.getElementById("c")
 var ctx = canvas.getContext("2d");
 ctx.imageSmoothingEnabled = false;
@@ -19,29 +20,33 @@ function mouseMove(event) {
 }
 canvas.addEventListener("mousemove",mouseMove)
 
+
 class particle {
 
-    constructor(x,y,color,type) {
+    constructor(x,y,r,g,b,type) {
         this.x = x;
-        this.y = y;//AAAAA
-        this.color = color;
+        this.y = y;
         this.type = type;
+        this.r =r;
+        this.g =g;
+        this.b  =b;
     }
     act() {
 
     }
     draw() {
-        ctx.fillStyle = this.color;
+        ctx.fillStyle = "rgb("+this.r.toString()+","+this.g.toString()+","+this.b.toString()+")";
         ctx.fillRect(this.x*particleSize,this.y*particleSize,particleSize,particleSize)
     }
 }
+
 //initalizing the particles
 var particles = [];
 for (let x = 0;  x< (maxX / particleSize); x++) {
     particles.push([]);
 
     for (let y = 0; y < (maxY / particleSize); y++) {
-        particles[x].push(new particle(x, y, "black", "empty"))
+        particles[x].push(new particle(x, y,255,255,0,"empty"))
     }
 }
 console.log(particles.length);
