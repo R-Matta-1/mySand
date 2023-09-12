@@ -23,7 +23,7 @@ canvas.addEventListener("mousemove",mouseMove)
 
 class particle {
 
-    constructor(x,y,r,g,b,type) {
+    constructor(x,y,color,type) {
         this.x = x;
         this.y = y;
         this.type = type;
