@@ -11,8 +11,8 @@ sand: 1,
 //////////////volors///////////
 const sandR =255;
 const sandG =204
-const SandB =77;//0
-
+const sandB =77;//0
+ 
 ///////////////////////////////
 
 var canvas = document.getElementById("c")
@@ -57,6 +57,7 @@ class particle {
         this.r = r;
         this.g = g;
         this.b = b;
+        this.acted = false;
     }
     act() {
 
@@ -64,13 +65,20 @@ class particle {
            case types.sand:
             
             if (this.bottomValid) {
-                if (particles[this.x][this.y+1].type == types.empty) {
-                 
-               
-                    particles[this.x][this.y+1].r= sandR;
-                    particles[this.x][this.y+1].g= sandG;
-                    particles[this.x][this.y+1].b= sandB;
-                    particles[this.x][this.y+1].type = types.sand;
+                if (particles[this.x][this.y + 1].type == types.empty) {
+
+                    this.r = 0;
+                    this.g = 0;
+                    this.b = 0;
+                    this.type = types.empty;
+
+                    particles[this.x][this.y + 1].r = sandR;
+                    particles[this.x][this.y + 1].g = sandG;
+                    particles[this.x][this.y + 1].b = sandB;
+                    particles[this.x][this.y + 1].type = types.sand;
+                    particles[this.x][this.y + 1].acted = true;
+                } else {
+                    ///////////netx
                 }
             }
                 break;
@@ -112,7 +120,10 @@ function drawScreen() {
 function updateScreen() {
     for (let x = 0; x < particles.length; x++) {
         for (let y = 0; y < particles[x].length; y++) {
+
+            if(!particles[x][y].acted)
             particles[x][y].act();
+            particles[x][y].acted = false;
         }
     }
 }
@@ -122,7 +133,7 @@ function tick() {
     if (mouseDown) {
         particles[mouseX][mouseY].r = sandR;
         particles[mouseX][mouseY].g = sandG;
-        particles[mouseX][mouseY].b = SandB;
+        particles[mouseX][mouseY].b = sandB;
         particles[mouseX][mouseY].type = types.sand;
         
         ctx.fillRect(mouseX, mouseY, 10, 10);
