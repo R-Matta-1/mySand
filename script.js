@@ -63,20 +63,18 @@ class particle {
         switch (this.type) {
             //////////////////////////////////////////////////
           case types.sand:
-
             if (this.checkType(0,1) == types.empty) {
               this.transfer(0, 1, 0, 0, 0, types.empty)
             } else {
-
              let LDClear = this.checkType(-1,1) == types.empty;
              let RDClear = this.checkType(1,1) == types.empty;
                 
             if (LDClear && RDClear) {
                 (Math.random()>.5)? this.transfer(-1,1,0,0,0,types.empty):this.transfer(1,1,0,0,0,types.empty);
             } else if(RDClear){
-                this.transfer(1,1,0,0,0,types.empty)
+              (Math.random()>.5) ? this.transfer(1,1,0,0,0,types.empty):null;
             }else if(LDClear){
-                this.transfer(-1,1,0,0,0,types.empty)
+              (Math.random()>.5) ? this.transfer(-1,1,0,0,0,types.empty):null;
             }
 
         }
