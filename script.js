@@ -8,10 +8,12 @@ empty:0,
 sand: 1,
 
 }
-//////////////volors///////////
-const sandR =255;
-const sandG =204
-const sandB =77;//0
+//////////////colors///////////
+///stylized in a MAT format 
+const typeR = [0,255];
+const typeG = [0,204];
+const typeB = [0,50];
+
  
 ///////////////////////////////
 
@@ -49,10 +51,7 @@ class particle {
     constructor(x, y, r, g, b, type) {
         this.x = x;
         this.y = y;
-        this.bottomValid = (this.y+1<maxY/particleSize)
-        this.topValid = (this.y-1>0)
-        this.leftValid = (this.x-1>0)
-        this.rightValid = (this.x+1<maxX/particleSize)
+  
         this.type = type;
         this.r = r;
         this.g = g;
@@ -60,38 +59,61 @@ class particle {
         this.acted = false;
     }
     act() {
+       // this.acted = true;
+        switch (this.type) {
+            //////////////////////////////////////////////////
+          case types.sand:
 
-         switch (this.type) {
-           case types.sand:
-            
-            if (this.bottomValid) {
-                if (particles[this.x][this.y + 1].type == types.empty) {
+            if (this.checkType(0,1) == types.empty) {
+              this.transfer(0, 1, 0, 0, 0, types.empty)
+            } else {
 
-                    this.r = 0;
-                    this.g = 0;
-                    this.b = 0;
-                    this.type = types.empty;
-
-                    particles[this.x][this.y + 1].r = sandR;
-                    particles[this.x][this.y + 1].g = sandG;
-                    particles[this.x][this.y + 1].b = sandB;
-                    particles[this.x][this.y + 1].type = types.sand;
-                    particles[this.x][this.y + 1].acted = true;
-                } else {
-                    ///////////netx
-                }
+             let LDClear = this.checkType(-1,1) == types.empty;
+             let RDClear = this.checkType(1,1) == types.empty;
+                
+            if (LDClear && RDClear) {
+                (Math.random()>.5)? this.transfer(-1,1,0,0,0,types.empty):this.transfer(1,1,0,0,0,types.empty);
+            } else if(RDClear){
+                this.transfer(1,1,0,0,0,types.empty)
+            }else if(LDClear){
+                this.transfer(-1,1,0,0,0,types.empty)
             }
-                break;
-        
-            default:
-                break;
-        }
 
+        }
+            break;
+            ////////////////////////////////////////////////////////
+          default:
+            break;
+        }
+      }
+    transfer(x,y,r,g,b,replaceType){
+  if (this.checkValid(x,y)) {
+    
+  
+        particles[this.x+x][this.y +y].r = this.r;
+        particles[this.x+x][this.y + y].g = this.g;
+        particles[this.x+x][this.y + y].b = this.b;
+        particles[this.x+x][this.y + y].type = this.type;
+        particles[this.x+x][this.y + y].acted = true;
+
+        this.r = r;
+        this.g = g;
+        this.b = b;
+        this.type = replaceType;
+  }
     }
-    draw() {
-        ctx.fillStyle = "rgb(" + this.r.toString() + "," + this.g.toString() + "," + this.b.toString() + ")";
-        ctx.fillRect(this.x * particleSize, this.y * particleSize, particleSize, particleSize)
-    }
+checkValid(x,y){
+    let newX = this.x+x;
+    let newY = this.y+y;
+    return (newY<particles[this.x].length-1 &&newY>0 && newX >0 && newX<particles.length-1);
+}
+checkType(x,y){
+    return particles[this.x+x][this.y+y].type;
+}
+   draw() {
+  ctx.fillStyle = "rgb(" + this.r.toString() + "," + this.g.toString() + "," + this.b.toString() + ")";
+  ctx.fillRect(this.x * particleSize, this.y * particleSize, particleSize, particleSize)
+}
 }
 
 //initalizing the particles
@@ -105,8 +127,6 @@ for (let x = 0; x < (maxX / particleSize); x++) {
 }
 console.log(particles.length);
 
-
-
 function drawScreen() {
     ctx.fillStyle = "black";
     ctx.clearRect(0, 0, maxX, maxY)
@@ -117,29 +137,46 @@ function drawScreen() {
     }
 }
 
+var updateSwap = true;
 function updateScreen() {
+if (updateSwap) {
     for (let x = 0; x < particles.length; x++) {
         for (let y = 0; y < particles[x].length; y++) {
 
-            if(!particles[x][y].acted)
-            particles[x][y].act();
+           if(!particles[x][y].acted){
+            particles[x][y].act();}
             particles[x][y].acted = false;
         }
     }
+} else {
+    for (let x = particles.length-1; x >= 0; x--) {
+     for (let y = 0; y < particles[x].length; y++) {
+
+        if(!particles[x][y].acted){
+          particles[x][y].act();
+        }
+          particles[x][y].acted = false;
+        }
+    }
+}
+updateSwap = !updateSwap;
 }
 
 function tick() {
 
-    if (mouseDown) {
-        particles[mouseX][mouseY].r = sandR;
-        particles[mouseX][mouseY].g = sandG;
-        particles[mouseX][mouseY].b = sandB;
-        particles[mouseX][mouseY].type = types.sand;
+if (mouseDown) {
+      for (let i = -5; i < 5; i++) {
+        if  (mouseY>0 && mouseX+i >0 && mouseX+i<particles.length-1&& mouseY<particles[1].length-1 ) {
+       
+        particles[mouseX+i][mouseY].r = typeR[types.sand];
+        particles[mouseX+i][mouseY].g = typeG[types.sand];
+        particles[mouseX+i][mouseY].b = typeB[types.sand];
+        particles[mouseX+i][mouseY].type = types.sand;
         
         ctx.fillRect(mouseX, mouseY, 10, 10);
-    }
+    }}}
 
-    updateScreen()
+   updateScreen()
 
     drawScreen();
 
