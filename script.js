@@ -3,6 +3,17 @@ const maxX = 1000 - particleSize;
 const maxY = 500 - particleSize;
 
 
+const types ={
+empty:0, 
+sand: 1,
+
+}
+//////////////volors///////////
+const sandR =255;
+const sandG =204
+const SandB =77;//0
+
+///////////////////////////////
 
 var canvas = document.getElementById("c")
 var ctx = canvas.getContext("2d");
@@ -16,9 +27,8 @@ var mouseDown = false;
 
 //////////////////////////////event listner land////////////////
 function mouseMove(event) {
-    mouseX = event.clientX - event.currentTarget.offsetLeft;
-    mouseY = event.clientY - event.currentTarget.offsetTop;
-    ctx.fillRect(mouseX, mouseY, 10, 10);
+    mouseX = Math.floor((event.clientX - event.currentTarget.offsetLeft)/particleSize);
+    mouseY =  Math.floor((event.clientY - event.currentTarget.offsetTop)/particleSize);
 }
 canvas.addEventListener("mousemove", mouseMove)
 
@@ -39,12 +49,35 @@ class particle {
     constructor(x, y, r, g, b, type) {
         this.x = x;
         this.y = y;
+        this.bottomValid = (this.y+1<maxY/particleSize)
+        this.topValid = (this.y-1>0)
+        this.leftValid = (this.x-1>0)
+        this.rightValid = (this.x+1<maxX/particleSize)
         this.type = type;
         this.r = r;
         this.g = g;
         this.b = b;
     }
     act() {
+
+         switch (this.type) {
+           case types.sand:
+            
+            if (this.bottomValid) {
+                if (particles[this.x][this.y+1].type == types.empty) {
+                 
+               
+                    particles[this.x][this.y+1].r= sandR;
+                    particles[this.x][this.y+1].g= sandG;
+                    particles[this.x][this.y+1].b= sandB;
+                    particles[this.x][this.y+1].type = types.sand;
+                }
+            }
+                break;
+        
+            default:
+                break;
+        }
 
     }
     draw() {
@@ -59,7 +92,7 @@ for (let x = 0; x < (maxX / particleSize); x++) {
     particles.push([]);
 
     for (let y = 0; y < (maxY / particleSize); y++) {
-        particles[x].push(new particle(x, y, 255, 255, 0, "empty"))
+        particles[x].push(new particle(x, y, 0, 0, 0, types.empty))
     }
 }
 console.log(particles.length);
@@ -86,10 +119,12 @@ function updateScreen() {
 
 function tick() {
 
-
-
     if (mouseDown) {
-        particles[Math.floor(mouseX / particleSize)][Math.floor(mouseY / particleSize)].g = 0;
+        particles[mouseX][mouseY].r = sandR;
+        particles[mouseX][mouseY].g = sandG;
+        particles[mouseX][mouseY].b = SandB;
+        particles[mouseX][mouseY].type = types.sand;
+        
         ctx.fillRect(mouseX, mouseY, 10, 10);
     }
 
