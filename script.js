@@ -10,9 +10,10 @@ sand: 1,
 }
 //////////////colors///////////
 ///stylized in a MAT format 
-const typeR = [0,255];
-const typeG = [0,204];
-const typeB = [0,50];
+const typeR =      [0,255];
+const typeG =      [0,204];
+const typeB =      [0, 50];
+const typeDensity =[0, 0.25];
 
  
 ///////////////////////////////
@@ -72,9 +73,9 @@ class particle {
             if (LDClear && RDClear) {
                 (Math.random()>.5)? this.transfer(-1,1,0,0,0,types.empty):this.transfer(1,1,0,0,0,types.empty);
             } else if(RDClear){
-              (Math.random()>.5) ? this.transfer(1,1,0,0,0,types.empty):null;
-            }else if(LDClear){
-              (Math.random()>.5) ? this.transfer(-1,1,0,0,0,types.empty):null;
+                (Math.random() > typeDensity[types.sand]) ? this.transfer(1,1,0,0,0,types.empty):null;
+            } else if (LDClear) {
+                (Math.random() > typeDensity[types.sand]) ? this.transfer(-1, 1, 0, 0, 0, types.empty) : null;
             }
 
         }
