@@ -13,7 +13,7 @@ sand: 1,
 const typeR =      [0,255];
 const typeG =      [0,204];
 const typeB =      [0, 50];
-const typeDensity =[0, 0.25];
+const typeDensity =[0, 0];
 
  
 ///////////////////////////////
@@ -77,7 +77,6 @@ class particle {
             } else if (LDClear) {
                 (Math.random() > typeDensity[types.sand]) ? this.transfer(-1, 1, 0, 0, 0, types.empty) : null;
             }
-
         }
             break;
             ////////////////////////////////////////////////////////
@@ -89,7 +88,7 @@ class particle {
   if (this.checkValid(x,y)) {
     
   
-        particles[this.x+x][this.y +y].r = this.r;
+        particles[this.x+x][this.y + y].r = this.r;
         particles[this.x+x][this.y + y].g = this.g;
         particles[this.x+x][this.y + y].b = this.b;
         particles[this.x+x][this.y + y].type = this.type;
@@ -104,10 +103,10 @@ class particle {
 checkValid(x,y){
     let newX = this.x+x;
     let newY = this.y+y;
-    return (newY<particles[this.x].length-1 &&newY>0 && newX >0 && newX<particles.length-1);
+    return (newY<particlesRead[this.x].length-1 &&newY>0 && newX >0 && newX<particlesRead.length-1);
 }
 checkType(x,y){
-    return particles[this.x+x][this.y+y].type;
+    return particlesRead[this.x+x][this.y+y].type;
 }
    draw() {
   ctx.fillStyle = "rgb(" + this.r.toString() + "," + this.g.toString() + "," + this.b.toString() + ")";
@@ -124,6 +123,11 @@ for (let x = 0; x < (maxX / particleSize); x++) {
         particles[x].push(new particle(x, y, 0, 0, 0, types.empty))
     }
 }
+var particlesRead  = structuredClone(particles);
+
+//cloneParticleWorld(particlesRead,particlesFrom)
+
+
 console.log(particles.length);
 
 function drawScreen() {
@@ -175,11 +179,14 @@ if (mouseDown) {
         ctx.fillRect(mouseX, mouseY, 10, 10);
     }}}
 
+   particlesRead = structuredClone(particles);
    updateScreen()
-
+  
     drawScreen();
 
     requestAnimationFrame(tick)
 }
 
 tick();
+
+
