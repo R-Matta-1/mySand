@@ -57,6 +57,9 @@ class particle {
         this.r = r;
         this.g = g;
         this.b = b;
+        this.color;
+        this.updateColor(this.r,this.g,this.b)
+
         this.acted = false;
     }
     act() {
@@ -87,18 +90,23 @@ class particle {
     transfer(x,y,r,g,b,replaceType){
   if (this.checkValid(x,y)) {
     
-  
-        particles[this.x+x][this.y + y].r = this.r;
-        particles[this.x+x][this.y + y].g = this.g;
-        particles[this.x+x][this.y + y].b = this.b;
+
+      particles[this.x + x][this.y + y].updateColor(this.r,this.g,this.b)
         particles[this.x+x][this.y + y].type = this.type;
         particles[this.x+x][this.y + y].acted = true;
+
+      this.updateColor(typeR[replaceType], typeG[replaceType], typeB[replaceType])
+        this.type = replaceType;
+  }
+    }
+    updateColor(r, g, b) {
 
         this.r = r;
         this.g = g;
         this.b = b;
-        this.type = replaceType;
-  }
+
+        this.color = "rgb(" + this.r + "," + this.g + "," + this.b + ")";
+
     }
 checkValid(x,y){
     let newX = this.x+x;
@@ -109,7 +117,7 @@ checkType(x,y){
     return particlesRead[this.x+x][this.y+y].type;
 }
    draw() {
-  ctx.fillStyle = "rgb(" + this.r.toString() + "," + this.g.toString() + "," + this.b.toString() + ")";
+  ctx.fillStyle = this.color
   ctx.fillRect(this.x * particleSize, this.y * particleSize, particleSize, particleSize)
 }
 }
