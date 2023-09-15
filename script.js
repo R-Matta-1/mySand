@@ -3,20 +3,22 @@ const maxX = 1000 - particleSize;
 const maxY = 500 - particleSize;
 
 
-const types ={
-empty:0, 
-sand: 1,
-
-}
-//////////////colors///////////
-///stylized in a MAT format 
-const typeR =      [0,255];
-const typeG =      [0,204];
-const typeB =      [0, 50];
-const typeDensity =[0, 0];
-
- 
-///////////////////////////////
+const type = {
+    sand: {
+      id: 1,
+      r: 255,
+      g: 204,
+      b: 50,
+      density: 0,
+    },
+    empty: {
+      id: 0,
+      r: 0,
+      g: 0,
+      b: 0,
+      density: 0,
+    }
+  }
 
 var canvas = document.getElementById("c")
 var ctx = canvas.getContext("2d");
@@ -66,19 +68,19 @@ class particle {
        // this.acted = true;
         switch (this.type) {
             //////////////////////////////////////////////////
-          case types.sand:
-            if (this.checkType(0,1) == types.empty) {
-              this.transfer(0, 1, 0, 0, 0, types.empty)
+          case type.sand.id:
+            if (this.checkType(0,1) == type.empty.id) {
+              this.transfer(0, 1, 0, 0, 0, type.empty.id)
             } else {
-             let LDClear = this.checkType(-1,1) == types.empty;
-             let RDClear = this.checkType(1,1) == types.empty;
+             let LDClear = this.checkType(-1,1) == type.empty.id;
+             let RDClear = this.checkType(1,1) == type.empty.id;
                 
             if (LDClear && RDClear) {
-                (Math.random()>.5)? this.transfer(-1,1,0,0,0,types.empty):this.transfer(1,1,0,0,0,types.empty);
+                (Math.random()>.5)? this.transfer(-1,1,0,0,0,type.empty.id):this.transfer(1,1,0,0,0,type.empty.id);
             } else if(RDClear){
-                (Math.random() > typeDensity[types.sand]) ? this.transfer(1,1,0,0,0,types.empty):null;
+                (Math.random() > type.sand.density) ? this.transfer(1,1,0,0,0,type.empty.id):null;
             } else if (LDClear) {
-                (Math.random() > typeDensity[types.sand]) ? this.transfer(-1, 1, 0, 0, 0, types.empty) : null;
+                (Math.random() > type.sand.denisty) ? this.transfer(-1, 1, 0, 0, 0, type.empty.id) : null;
             }
         }
             break;
@@ -95,8 +97,8 @@ class particle {
         particles[this.x+x][this.y + y].type = this.type;
         particles[this.x+x][this.y + y].acted = true;
 
-      this.updateColor(typeR[replaceType], typeG[replaceType], typeB[replaceType])
-        this.type = replaceType;
+      this.updateColor(0,0, 0)
+        this.type = type.empty.id;
   }
     }
     updateColor(r, g, b) {
@@ -117,7 +119,7 @@ checkType(x,y){
     return particlesRead[this.x+x][this.y+y].type;
 }
    draw() {
-  ctx.fillStyle = this.color
+ (ctx.fillStyle != this.color)? ctx.fillStyle = this.color:null;
   ctx.fillRect(this.x * particleSize, this.y * particleSize, particleSize, particleSize)
 }
 }
@@ -128,7 +130,7 @@ for (let x = 0; x < (maxX / particleSize); x++) {
     particles.push([]);
 
     for (let y = 0; y < (maxY / particleSize); y++) {
-        particles[x].push(new particle(x, y, 0, 0, 0, types.empty))
+        particles[x].push(new particle(x, y, 0, 0, 0, type.empty.id))
     }
 }
 var particlesRead  = structuredClone(particles);
@@ -148,9 +150,9 @@ function drawScreen() {
     }
 }
 
-var updateSwap = true;
+
 function updateScreen() {
-if (updateSwap) {
+
     for (let x = 0; x < particles.length; x++) {
         for (let y = 0; y < particles[x].length; y++) {
 
@@ -159,18 +161,8 @@ if (updateSwap) {
             particles[x][y].acted = false;
         }
     }
-} else {
-    for (let x = particles.length-1; x >= 0; x--) {
-     for (let y = 0; y < particles[x].length; y++) {
 
-        if(!particles[x][y].acted){
-          particles[x][y].act();
-        }
-          particles[x][y].acted = false;
-        }
-    }
-}
-updateSwap = !updateSwap;
+
 }
 
 function tick() {
@@ -179,10 +171,8 @@ if (mouseDown) {
       for (let i = -5; i < 5; i++) {
         if  (mouseY>0 && mouseX+i >0 && mouseX+i<particles.length-1&& mouseY<particles[1].length-1 ) {
        
-        particles[mouseX+i][mouseY].r = typeR[types.sand];
-        particles[mouseX+i][mouseY].g = typeG[types.sand];
-        particles[mouseX+i][mouseY].b = typeB[types.sand];
-        particles[mouseX+i][mouseY].type = types.sand;
+        particles[mouseX+i][mouseY].updateColor(type.sand.r,type.sand.g,type.sand.b)
+        particles[mouseX+i][mouseY].type = type.sand.id;
         
         ctx.fillRect(mouseX, mouseY, 10, 10);
     }}}
@@ -196,5 +186,3 @@ if (mouseDown) {
 }
 
 tick();
-
-
