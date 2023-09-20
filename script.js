@@ -12,11 +12,18 @@ const type = {
       density: 0.2,
     },
     empty: {
-      id: 0,
+      id: 0, 
       r: 0,
       g: 0,
       b: 0,
       density: 0,
+    },
+    huegene:{
+        id:3,
+        r:175,
+        g:0,
+        b:255,
+        density:1,
     }
   }
 
@@ -68,7 +75,7 @@ class particle {
        
         switch (this.type) {
             //////////////////////////////////////////////////
-            case type.sand.id:
+          case type.sand.id:
                 if (this.checkType(0, 1) == type.empty.id) {
                     this.transfer(0, 1);
                     break;
@@ -88,16 +95,34 @@ class particle {
             break;
         }
       }
-    transfer(x,y){
+
+
+      transfer(x,y){
   if (this.checkValid(x,y)) {
-    
+let other = particles[this.x + x][this.y + y]
 
-      particles[this.x + x][this.y + y].updateColor(this.r,this.g,this.b)
-        particles[this.x+x][this.y + y].type = this.type;
-        particles[this.x+x][this.y + y].acted = true;
+var temp = this.r;
+this.r = other.r;
+other.r = temp;
 
-      this.updateColor(0,0, 0)
-        this.type = type.empty.id;
+var temp = this.g;
+this.g = other.g;
+other.g = temp;
+
+var temp = this.b;
+this.b = other.b;
+other.b = temp;
+
+var temp = this.type;
+this.type = other.type;
+other.type = temp;
+
+other.updateColor(other.r,other.g,other.b)
+other.acted = true;
+
+this.updateColor(this.r,this.g,this.b)
+
+
   }
     }
     updateColor(r, g, b) {
@@ -187,3 +212,4 @@ function tick() {
     requestAnimationFrame(tick)
 }
 tick();
+
