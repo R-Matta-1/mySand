@@ -31,7 +31,14 @@ const type = {
         g:19,
         b:255,
         density:1,
-    }
+    },
+		water:{
+			id:4,    //44, 32, 201
+			r:44,
+			g:32,
+			b:201,
+			density:0.01,
+	}
   }
 
 var canvas = document.getElementById("c")
@@ -93,6 +100,12 @@ function keypress(event) {
          placeG = type.huegene.g
          placeB = type.huegene.b
     break;
+		case "4":
+			placeType = type.water.id
+			 placeR = type.water.r
+			 placeG = type.water.g
+			 placeB = type.water.b
+	break;
     default:
         break;
 }
@@ -101,133 +114,143 @@ function keypress(event) {
 
 
 class particle {
-
     constructor(x, y, r, g, b, type) {
-        this.x = x;
-        this.y = y;
-  
-        this.type = type;
-        this.r = r;
-        this.g = g;
-        this.b = b;
-        this.color;
-        this.updateColor(this.r,this.g,this.b)
-
-        this.acted = false;
+      this.x = x;
+      this.y = y;
+      this.type = type;
+      this.r = r;
+      this.g = g;
+      this.b = b;
+      this.color;
+      this.updateColor(this.r, this.g, this.b)
+      this.acted = false;
     }
     act() {
-       
-        switch (this.type) {
-            //////////////////////////////////////////////////
-          case type.sand.id:
-                if (this.checkType(0, 1) == type.empty.id) {
-                    this.transfer(0, 1);
-                    break;
-                }
-                let LD = this.checkType(-1, 1) == type.empty.id
-                let RD = this.checkType(1, 1) == type.empty.id
-                if (LD && RD) {
-                    (Math.random() > .5) ? this.transfer(-1, 1) : this.transfer(-1, 1);
-                    break; 
-                }
-                if (LD) { (Math.random() > type.sand.density) ? this.transfer(-1, 1) : null; break; }
-                if (RD) { (Math.random() > type.sand.density) ? this.transfer( 1, 1) : null; break; }
+      switch (this.type) {
+        //////////////////////////////////////////////////
+        case type.sand.id:
+          if (this.checkType(0, 1) == type.empty.id) {
+            this.transfer(0, 1);
+            break;
+          }
+          let LDsa = this.checkType(-1, 1) == type.empty.id
+          let RDsa = this.checkType(1, 1) == type.empty.id
+          if (LDsa && RDsa) {
+            (Math.random() > .5) ? this.transfer(-1, 1): this.transfer(-1, 1);
+            break;
+          }
+          if (LDsa) {
+            (Math.random() > type.sand.density) ? this.transfer(-1, 1): null;
+            break;
+          }
+          if (RDsa) {
+            (Math.random() > type.sand.density) ? this.transfer(1, 1): null;
+            break;
+          }
+          break;
+          ////////////////////////////////////////////////////////
+        case type.huegene.id:
+          let randR = Math.max(Math.min(this.r + Math.floor((Math.random() * 30) - 15), 255), 0);
+          let randG = Math.max(Math.min(this.g + Math.floor((Math.random() * 30) - 15), 255), 0);
+          let randB = Math.max(Math.min(this.b + Math.floor((Math.random() * 30) - 15), 255), 0);
+          switch (Math.floor(Math.random() * 4)) {
+            case 0:
+              if (this.checkType(0, 1) == type.empty.id) {
+                this.place(0,1, randR, randG, randB, type.huegene.id)
+              }
+              break;
+            case 1:
+              if (this.checkType(1, 0) == type.empty.id) {
+                this.place(1, 0, randR, randG, randB, type.huegene.id)
+              }
+              break;
+            case 2:
+              if (this.checkType(0, -1) == type.empty.id) {
+                this.place(0, -1, randR, randG, randB, type.huegene.id)
+              }
+              break;
+            case 3:
+              if (this.checkType(-1, 0) == type.empty.id) {
+                this.place(-1, 0, randR, randG, randB, type.huegene.id)
+              }
+              break;
+            default:
+              break;
+          }
+          break;
+          ////////////////////////////////////////////////////////
+					case type.water.id:
+if (this.checkType(0,1) == type.empty.id) {
+	this.transfer(0,1);
 
-            break;
-            ////////////////////////////////////////////////////////
-           case type.huegene.id:
-            let randR = Math.max(Math.min(this.r + Math.floor((Math.random()*30)-15),255),0);
-            let randG = Math.max(Math.min(this.g + Math.floor((Math.random()*30)-15),255),0);
-            let randB = Math.max(Math.min(this.b + Math.floor((Math.random()*30)-15),255),0);
-                 switch (Math.floor(Math.random()*4)) {
-                    case 0:
-                    if (this.checkType(0,1) == type.empty.id) {
-                        this.place(0,1,randR,randG,randB,type.huegene.id)
-                     }  break;
-                     case 1:
-                     if (this.checkType(1,0) == type.empty.id) {
-                        this.place(1,0,randR,randG,randB,type.huegene.id)
-                     } break;
-                     case 2: 
-                     if (this.checkType(0,-1) == type.empty.id) {
-                        this.place(0,-1,randR,randG,randB,type.huegene.id)
-                     }  break;
-                     case 3:
-                     if (this.checkType(-1,0) == type.empty.id) {
-                        this.place(-1,0,randR,randG,randB,type.huegene.id)
-                     } break;
-                    default:
-                        break;
-                }
+}
+let LDwa = (this.checkType(-1, 0) == type.empty.id)
+let RDwa = (this.checkType(1, 0) == type.empty.id)
+if (LDwa && RDwa) {
+	(Math.random() > .5) ? this.transfer(-1, 0): this.transfer(-1, 0);
+	break;
+}
+if (RDwa) {
+  this.transfer(1, 0)
+  break;
+}
+if (LDwa) {
+	 this.transfer(-1, 0)
+	break;
+}
 
-               
-            break;
-            ////////////////////////////////////////////////////////
-          default:
-            break;
-        }
+					break;
+        default:
+          break;
       }
-
-
-      transfer(x,y){
-  if (this.checkValid(x,y)) {
-let other = particles[this.x + x][this.y + y]
-
-
- var temp = this.r;
-this.r = other.r;
-other.r = temp;
-
- temp = this.g;
-this.g = other.g;
-other.g = temp;
-
- temp = this.b;
-this.b = other.b;
-other.b = temp;
-
- temp = this.type;
-this.type = other.type;
-other.type = temp;
-
-other.updateColor(other.r,other.g,other.b)
-other.acted = true;
-
-this.updateColor(this.r,this.g,this.b)
-
-
-  }
     }
-place(x,y,r,g,b,t){
-    if (this.checkValid(x,y)) {      
-             particles[this.x +x][this.y+y].type = t
-             particles[this.x +x][this.y+y].updateColor(r,g,b)
-             particles[this.x +x][this.y+y].acted = true
-        }
-}
+    transfer(x, y) {
+      if (this.checkValid(x, y)) {
+        let other = particles[this.x + x][this.y + y]
+        var temp = this.r;
+        this.r = other.r;
+        other.r = temp;
+        temp = this.g;
+        this.g = other.g;
+        other.g = temp;
+        temp = this.b;
+        this.b = other.b;
+        other.b = temp;
+        temp = this.type;
+        this.type = other.type;
+        other.type = temp;
+        other.updateColor(other.r, other.g, other.b)
+        other.acted = true;
+        this.updateColor(this.r, this.g, this.b)
+      }
+    }
+    place(x, y, r, g, b, t) {
+      if (this.checkValid(x, y)) {
+        particles[this.x + x][this.y + y].type = t
+        particles[this.x + x][this.y + y].updateColor(r, g, b)
+        particles[this.x + x][this.y + y].acted = true
+      }
+    }
     updateColor(r, g, b) {
-
-        this.r = r;
-        this.g = g;
-        this.b = b;
-
-        this.color = "rgb(" + this.r + "," + this.g + "," + this.b + ")";
-
+      this.r = r;
+      this.g = g;
+      this.b = b;
+      this.color = "rgb(" + this.r + "," + this.g + "," + this.b + ")";
     }
-checkValid(x,y){
-    let newX = this.x+x;
-    let newY = this.y+y;
-    return (newY<particles[this.x].length-1 &&newY>0 && newX >0 && newX<particles.length-1);
-}
-checkType(x,y){
-    return particles[this.x+x][this.y+y].type;
-}
-   draw() {
- (ctx.fillStyle != this.color)? ctx.fillStyle = this.color:null;
-  ctx.fillRect(this.x * particleSize, this.y * particleSize, particleSize, particleSize)
-}
-
-}
+    checkValid(x, y) {
+      let newX = this.x + x;
+      let newY = this.y + y;
+      return (newY < particles[this.x].length - 1 && newY > 0 && newX > 0 && newX < particles.length - 1);
+    }
+    checkType(x, y) {
+       if( this.checkValid(x,y)){
+      return particles[this.x + x][this.y + y].type;}
+    }
+    draw() {
+      (ctx.fillStyle != this.color) ? ctx.fillStyle = this.color: null;
+      ctx.fillRect(this.x * particleSize, this.y * particleSize, particleSize, particleSize)
+    }
+  }
 
 //initalizing the particles
 var particles = [];
@@ -255,11 +278,22 @@ function drawScreen() {
 }
 
 var updateAmount = 2;
+var updateSwap = true;
 function updateScreen() {
-    //
+  if (updateSwap) {
     for (let i = 0; i < updateAmount; i++) {
-        
+      for (let x = particles.length-1-i; x >= 0; x -= updateAmount) {
+          for (let y = 0; y < particles[x].length; y ++) {
 
+              if (!particles[x][y].acted) {
+                  particles[x][y].act();
+              }
+              particles[x][y].acted = false;
+          }
+      }
+  }
+  }  else {
+    for (let i = 0; i < updateAmount; i++) {
         for (let x = i; x < particles.length; x += updateAmount) {
             for (let y = 0; y < particles[x].length; y ++) {
 
@@ -270,8 +304,8 @@ function updateScreen() {
             }
         }
     }
- 
-
+  }
+updateSwap = !updateSwap
 }
 function clickInteraction() {
     if (mouseDown) {
