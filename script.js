@@ -18,10 +18,17 @@ const type = {
       b: 0,
       density: 0,
     },
+    wall:{
+        id:2,
+        r:119,
+        g:119,
+        b:119,
+        density:1,
+    },
     huegene:{
-        id:3,
-        r:175,
-        g:0,
+        id:3,    //212, 19, 255
+        r:212,
+        g:19,
         b:255,
         density:1,
     }
@@ -36,7 +43,12 @@ canvas.height = maxY;
 var mouseX = 0;
 var mouseY = 0;
 var mouseDown = false;
+var recentKey = 0;
 
+var placeType = type.sand.id
+var placeR = type.sand.r
+var placeG = type.sand.g
+var placeB = type.sand.b
 //////////////////////////////event listner land////////////////
 function mouseMove(event) {
     mouseX = Math.floor((event.clientX - event.currentTarget.offsetLeft)/particleSize);
@@ -53,7 +65,39 @@ function mouseUp() {
 canvas.addEventListener("mousedown", mouseDo)
 canvas.addEventListener("mouseup", mouseUp)
 
-//////////////////////////////event listner land////////////////
+document.onkeydown = keypress;
+function keypress(event) {
+   recentKey = event.key
+   switch (recentKey) {
+    case "1":
+         placeType = type.sand.id
+         placeR = type.sand.r
+         placeG = type.sand.g
+         placeB = type.sand.b
+        break;
+        case "2":
+            placeType = type.wall.id
+            placeR = type.wall.r
+            placeG = type.wall.g
+            placeB = type.wall.b
+           break;
+    case "0":
+        placeType = type.empty.id
+         placeR = type.empty.r
+         placeG = type.empty.g
+         placeB = type.empty.b
+    break;
+    case "3":
+        placeType = type.huegene.id
+         placeR = type.huegene.r
+         placeG = type.huegene.g
+         placeB = type.huegene.b
+    break;
+    default:
+        break;
+}
+}
+//////////////////////////////event listner land End////////////////
 
 
 class particle {
@@ -84,11 +128,39 @@ class particle {
                 let RD = this.checkType(1, 1) == type.empty.id
                 if (LD && RD) {
                     (Math.random() > .5) ? this.transfer(-1, 1) : this.transfer(-1, 1);
-                    break;
+                    break; 
                 }
                 if (LD) { (Math.random() > type.sand.density) ? this.transfer(-1, 1) : null; break; }
                 if (RD) { (Math.random() > type.sand.density) ? this.transfer( 1, 1) : null; break; }
 
+            break;
+            ////////////////////////////////////////////////////////
+           case type.huegene.id:
+            let randR = Math.max(Math.min(this.r + Math.floor((Math.random()*30)-15),255),0);
+            let randG = Math.max(Math.min(this.g + Math.floor((Math.random()*30)-15),255),0);
+            let randB = Math.max(Math.min(this.b + Math.floor((Math.random()*30)-15),255),0);
+                 switch (Math.floor(Math.random()*4)) {
+                    case 0:
+                    if (this.checkType(0,1) == type.empty.id) {
+                        this.place(0,1,randR,randG,randB,type.huegene.id)
+                     }  break;
+                     case 1:
+                     if (this.checkType(1,0) == type.empty.id) {
+                        this.place(1,0,randR,randG,randB,type.huegene.id)
+                     } break;
+                     case 2: 
+                     if (this.checkType(0,-1) == type.empty.id) {
+                        this.place(0,-1,randR,randG,randB,type.huegene.id)
+                     }  break;
+                     case 3:
+                     if (this.checkType(-1,0) == type.empty.id) {
+                        this.place(-1,0,randR,randG,randB,type.huegene.id)
+                     } break;
+                    default:
+                        break;
+                }
+
+               
             break;
             ////////////////////////////////////////////////////////
           default:
@@ -101,19 +173,20 @@ class particle {
   if (this.checkValid(x,y)) {
 let other = particles[this.x + x][this.y + y]
 
-var temp = this.r;
+
+ var temp = this.r;
 this.r = other.r;
 other.r = temp;
 
-var temp = this.g;
+ temp = this.g;
 this.g = other.g;
 other.g = temp;
 
-var temp = this.b;
+ temp = this.b;
 this.b = other.b;
 other.b = temp;
 
-var temp = this.type;
+ temp = this.type;
 this.type = other.type;
 other.type = temp;
 
@@ -125,6 +198,13 @@ this.updateColor(this.r,this.g,this.b)
 
   }
     }
+place(x,y,r,g,b,t){
+    if (this.checkValid(x,y)) {      
+             particles[this.x +x][this.y+y].type = t
+             particles[this.x +x][this.y+y].updateColor(r,g,b)
+             particles[this.x +x][this.y+y].acted = true
+        }
+}
     updateColor(r, g, b) {
 
         this.r = r;
@@ -146,6 +226,7 @@ checkType(x,y){
  (ctx.fillStyle != this.color)? ctx.fillStyle = this.color:null;
   ctx.fillRect(this.x * particleSize, this.y * particleSize, particleSize, particleSize)
 }
+
 }
 
 //initalizing the particles
@@ -194,11 +275,12 @@ function updateScreen() {
 }
 function clickInteraction() {
     if (mouseDown) {
+       
         for (let i = -5; i < 5; i++) {
             if (mouseY > 0 && mouseX + i > 0 && mouseX + i < particles.length - 1 && mouseY < particles[1].length - 1) {
 
-                particles[mouseX + i][mouseY].updateColor(type.sand.r, type.sand.g, type.sand.b)
-                particles[mouseX + i][mouseY].type = type.sand.id;
+                particles[mouseX + i][mouseY].updateColor(placeR, placeG, placeB)
+                particles[mouseX + i][mouseY].type = placeType;
 
                 ctx.fillRect(mouseX, mouseY, 10, 10);
             }
