@@ -26,7 +26,7 @@ const type = {
         density:1,
     },
     huegene:{
-        id:3,    //212, 19, 255
+        id:0,    //212, 19, 255
         r:212,
         g:19,
         b:255,
@@ -37,7 +37,7 @@ const type = {
 			r:44,
 			g:32,
 			b:201,
-			density:0.01,
+			density:0.1,
 	}
   }
 
@@ -113,6 +113,7 @@ function keypress(event) {
 //////////////////////////////event listner land End////////////////
 
 
+
 class particle {
     constructor(x, y, r, g, b, type) {
       this.x = x;
@@ -179,27 +180,29 @@ class particle {
           }
           break;
           ////////////////////////////////////////////////////////
-					case type.water.id:
+	   case type.water.id:
 if (this.checkType(0,1) == type.empty.id) {
 	this.transfer(0,1);
 
 }
 let LDwa = (this.checkType(-1, 0) == type.empty.id)
-let RDwa = (this.checkType(1, 0) == type.empty.id)
+              let RDwa = (this.checkType(1, 0) == type.empty.id)
+
 if (LDwa && RDwa) {
 	(Math.random() > .5) ? this.transfer(-1, 0): this.transfer(-1, 0);
 	break;
 }
 if (RDwa) {
-  this.transfer(1, 0)
+    (Math.random() > type.water.density) ? this.transfer(1, 0) : null;
+
   break;
 }
 if (LDwa) {
-	 this.transfer(-1, 0)
+    (Math.random() > type.water.density) ? this.transfer(-1, 0) : null;
 	break;
 }
 
-					break;
+	break;
         default:
           break;
       }
@@ -282,16 +285,17 @@ function updateScreen() {
   if (updateSwap) {
     for (let i = 0; i < updateAmount; i++) {
       for (let x = particles.length-1-i; x >= 0; x -= updateAmount) {
-          for (let y = 0; y < particles[x].length; y ++) {
+          for (let y = 0; y < particles[x].length; y++) {
+            let  curnt = particles[x][y]
 
-              if (!particles[x][y].acted) {
-                  particles[x][y].act();
+              if (!curnt.acted) {
+                  curnt.act();
               }
-              particles[x][y].acted = false;
+              curnt.acted = false;
           }
       }
   }
-  }  else {
+ }  else {
     for (let i = 0; i < updateAmount; i++) {
         for (let x = i; x < particles.length; x += updateAmount) {
             for (let y = 0; y < particles[x].length; y ++) {
