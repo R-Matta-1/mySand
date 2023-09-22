@@ -265,7 +265,6 @@ for (let x = 0; x < (maxX / particleSize); x++) {
 
 
 
-
 console.log(particles.length);
 
 function drawScreen() {
