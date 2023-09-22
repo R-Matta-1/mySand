@@ -2,43 +2,45 @@ const particleSize = 5;
 const maxX = 1000 - particleSize;
 const maxY = 500 - particleSize;
 
-
 const type = {
     sand: {
-      id: 1,
       r: 255,
       g: 204,
       b: 50,
       density: 0.2,
     },
     empty: {
-      id: 0, 
       r: 0,
       g: 0,
       b: 0,
       density: 0,
     },
     wall:{
-        id:2,
         r:119,
         g:119,
         b:119,
         density:1,
     },
     huegene:{
-        id:0,    //212, 19, 255
+          //212, 19, 255
         r:212,
         g:19,
         b:255,
         density:1,
     },
 		water:{
-			id:4,    //44, 32, 201
+          //44, 32, 201
 			r:44,
 			g:32,
 			b:201,
-			density:0.1,
-	}
+			density:0.1,},
+      fire :{
+         //242, 84, 31
+        r:242,
+        g:84,
+        b:31,
+        density:0.0,
+      }
   }
 
 var canvas = document.getElementById("c")
@@ -52,7 +54,7 @@ var mouseY = 0;
 var mouseDown = false;
 var recentKey = 0;
 
-var placeType = type.sand.id
+var placeType = type.sand
 var placeR = type.sand.r
 var placeG = type.sand.g
 var placeB = type.sand.b
@@ -77,34 +79,40 @@ function keypress(event) {
    recentKey = event.key
    switch (recentKey) {
     case "1":
-         placeType = type.sand.id
+         placeType = type.sand
          placeR = type.sand.r
          placeG = type.sand.g
          placeB = type.sand.b
         break;
         case "2":
-            placeType = type.wall.id
+            placeType = type.wall
             placeR = type.wall.r
             placeG = type.wall.g
             placeB = type.wall.b
            break;
     case "0":
-        placeType = type.empty.id
+        placeType = type.empty
          placeR = type.empty.r
          placeG = type.empty.g
          placeB = type.empty.b
     break;
-    case "3":
-        placeType = type.huegene.id
+    case "9":
+        placeType = type.huegene
          placeR = type.huegene.r
          placeG = type.huegene.g
          placeB = type.huegene.b
     break;
-		case "4":
-			placeType = type.water.id
+		case "3":
+			placeType = type.water
 			 placeR = type.water.r
 			 placeG = type.water.g
 			 placeB = type.water.b
+       break;
+    case "4":
+        placeType = type.fire
+         placeR = type.fire.r
+         placeG = type.fire.g
+         placeB = type.fire.b
 	break;
     default:
         break;
@@ -129,13 +137,13 @@ class particle {
     act() {
       switch (this.type) {
         //////////////////////////////////////////////////
-        case type.sand.id:
-          if (this.checkType(0, 1) == type.empty.id) {
+        case type.sand:
+          if (this.checkType(0, 1).density < type.sand.density) {
             this.transfer(0, 1);
             break;
           }
-          let LDsa = this.checkType(-1, 1) == type.empty.id
-          let RDsa = this.checkType(1, 1) == type.empty.id
+          let LDsa = this.checkType(-1, 1) == type.empty
+          let RDsa = this.checkType(1, 1) == type.empty
           if (LDsa && RDsa) {
             (Math.random() > .5) ? this.transfer(-1, 1): this.transfer(-1, 1);
             break;
@@ -150,29 +158,48 @@ class particle {
           }
           break;
           ////////////////////////////////////////////////////////
-        case type.huegene.id:
-          let randR = Math.max(Math.min(this.r + Math.floor((Math.random() * 30) - 15), 255), 0);
-          let randG = Math.max(Math.min(this.g + Math.floor((Math.random() * 30) - 15), 255), 0);
-          let randB = Math.max(Math.min(this.b + Math.floor((Math.random() * 30) - 15), 255), 0);
+        case type.huegene:
+     
+      if (this.checkType(0, 1) == type.empty) {  //grav
+            this.transfer(0, 1);
+            break;
+          }
+          let LDhu = this.checkType(-1, 1) == type.empty
+          let RDhu = this.checkType(1, 1) == type.empty
+          if (LDhu && RDhu) {
+            (Math.random() > .5) ? this.transfer(-1, 1): this.transfer(-1, 1);
+            break;
+          }
+          if (LDhu) {
+            (Math.random() > type.sand.density) ? this.transfer(-1, 1): null;
+            break;
+          }
+          if (RDhu) {
+            (Math.random() > type.sand.density) ? this.transfer(1, 1): null;
+            break;
+          }
+          let randR = Math.max(Math.min(this.r + Math.floor((Math.random() * 50) - 25), 255), 0);
+          let randG = Math.max(Math.min(this.g + Math.floor((Math.random() * 50) - 25), 255), 0);
+          let randB = Math.max(Math.min(this.b + Math.floor((Math.random() * 50) - 25), 255), 0);
           switch (Math.floor(Math.random() * 4)) {
             case 0:
-              if (this.checkType(0, 1) == type.empty.id) {
-                this.place(0,1, randR, randG, randB, type.huegene.id)
+              if (this.checkType(0, 1) == type.empty) {
+                this.place(0,1, randR, randG, randB, type.huegene)
               }
               break;
             case 1:
-              if (this.checkType(1, 0) == type.empty.id) {
-                this.place(1, 0, randR, randG, randB, type.huegene.id)
+              if (this.checkType(1, 0) == type.empty) {
+                this.place(1, 0, randR, randG, randB, type.huegene)
               }
               break;
             case 2:
-              if (this.checkType(0, -1) == type.empty.id) {
-                this.place(0, -1, randR, randG, randB, type.huegene.id)
+              if (this.checkType(0, -1) == type.empty) {
+                this.place(0, -1, randR, randG, randB, type.huegene)
               }
               break;
             case 3:
-              if (this.checkType(-1, 0) == type.empty.id) {
-                this.place(-1, 0, randR, randG, randB, type.huegene.id)
+              if (this.checkType(-1, 0) == type.empty) {
+                this.place(-1, 0, randR, randG, randB, type.huegene)
               }
               break;
             default:
@@ -180,33 +207,40 @@ class particle {
           }
           break;
           ////////////////////////////////////////////////////////
-	   case type.water.id:
-if (this.checkType(0,1) == type.empty.id) {
+	   case type.water:
+if (this.checkType(0,1) == type.empty) {
 	this.transfer(0,1);
-
 }
-let LDwa = (this.checkType(-1, 0) == type.empty.id)
-              let RDwa = (this.checkType(1, 0) == type.empty.id)
-
+let LDwa = (this.checkType(-1, 0) == type.empty)
+              let RDwa = (this.checkType(1, 0) == type.empty)
 if (LDwa && RDwa) {
-	(Math.random() > .5) ? this.transfer(-1, 0): this.transfer(-1, 0);
+	(Math.random() > .5) ? this.transfer(1, 0): this.transfer(-1, 0);
 	break;
 }
 if (RDwa) {
     (Math.random() > type.water.density) ? this.transfer(1, 0) : null;
-
   break;
 }
 if (LDwa) {
     (Math.random() > type.water.density) ? this.transfer(-1, 0) : null;
 	break;
 }
-
+//////////////////////////////////////////////////////////////
 	break;
-        default:
+    case type.fire:
+      this.r -= Math.floor(Math.random()*10)
+      if(this.r<150 || Math.random()<0.1){
+        this.place(0,0,0,0,0,type.empty)
+      }
+if (this.checkType(0,-1)== type.empty) {
+this.transfer(0,-1)
+}
+  break;
+  default:
           break;
       }
     }
+
     transfer(x, y) {
       if (this.checkValid(x, y)) {
         let other = particles[this.x + x][this.y + y]
@@ -248,7 +282,9 @@ if (LDwa) {
     checkType(x, y) {
        if( this.checkValid(x,y)){
       return particles[this.x + x][this.y + y].type;}
-    }
+     else{
+      return type.empty;
+    }}
     draw() {
       (ctx.fillStyle != this.color) ? ctx.fillStyle = this.color: null;
       ctx.fillRect(this.x * particleSize, this.y * particleSize, particleSize, particleSize)
@@ -261,14 +297,10 @@ for (let x = 0; x < (maxX / particleSize); x++) {
     particles.push([]);
 
     for (let y = 0; y < (maxY / particleSize); y++) {
-        particles[x].push(new particle(x, y, 0, 0, 0, type.empty.id))
+        particles[x].push(new particle(x, y, 0, 0, 0, type.empty))
     }
 }
 
-
-
-
-console.log(particles.length);
 
 function drawScreen() {
 
@@ -331,4 +363,3 @@ function tick() {
     requestAnimationFrame(tick)
 }
 tick();
-
