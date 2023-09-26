@@ -140,12 +140,12 @@ class particle {
         case type.sand:
           if (this.checkType(0, 1).density < type.sand.density) {
             this.transfer(0, 1);
-            break;
+            break; 
           }
           let LDsa = this.checkType(-1, 1) == type.empty
           let RDsa = this.checkType(1, 1) == type.empty
           if (LDsa && RDsa) {
-            (Math.random() > .5) ? this.transfer(-1, 1): this.transfer(-1, 1);
+            (Math.random() > .5) ? this.transfer(1, 1): this.transfer(-1, 1);
             break;
           }
           if (LDsa) {
@@ -164,20 +164,20 @@ class particle {
             this.transfer(0, 1);
             break;
           }
-          let LDhu = this.checkType(-1, 1) == type.empty
-          let RDhu = this.checkType(1, 1) == type.empty
+          let LDhu = this.checkType(-1,1) == type.empty
+          let RDhu = this.checkType(1,1 ) == type.empty
           if (LDhu && RDhu) {
-            (Math.random() > .5) ? this.transfer(-1, 1): this.transfer(-1, 1);
+            (Math.random() > .5) ? this.transfer(-1, 1): this.transfer(1, 1);
             break;
-          }
-          if (LDhu) {
+         }
+         if (LDhu) {
             (Math.random() > type.sand.density) ? this.transfer(-1, 1): null;
             break;
           }
           if (RDhu) {
             (Math.random() > type.sand.density) ? this.transfer(1, 1): null;
             break;
-          }
+         }
           let randR = Math.max(Math.min(this.r + Math.floor((Math.random() * 50) - 25), 255), 0);
           let randG = Math.max(Math.min(this.g + Math.floor((Math.random() * 50) - 25), 255), 0);
           let randB = Math.max(Math.min(this.b + Math.floor((Math.random() * 50) - 25), 255), 0);
