@@ -44,15 +44,23 @@ const type = {
   }
 
 var canvas = document.getElementById("c")
-var ctx = canvas.getContext("2d");
+var ctx = canvas.getContext("2d",{alpha:false});
 ctx.imageSmoothingEnabled = false;
 canvas.width = maxX;
 canvas.height = maxY;
+
+var widthRange = document.getElementById("width")
+var heightRange = document.getElementById("height")
+var placeWidth = 10;
+var placeHeight = 1;
+var placeHeightDensity = 1;
+var placeWidthDensity = 1;
 
 var mouseX = 0;
 var mouseY = 0;
 var mouseDown = false;
 var recentKey = 0;
+var gamePaused = false;
 
 var placeType = type.sand
 var placeR = type.sand.r
@@ -60,13 +68,18 @@ var placeG = type.sand.g
 var placeB = type.sand.b
 //////////////////////////////event listner land////////////////
 function mouseMove(event) {
-    mouseX = Math.floor((event.clientX - event.currentTarget.offsetLeft)/particleSize);
-    mouseY =  Math.floor((event.clientY - event.currentTarget.offsetTop)/particleSize);
+  
+       mouseX =Math.floor((event.clientX - canvas.offsetLeft)/particleSize*1.1)
+       mouseY =Math.floor((event.clientY - canvas.offsetTop )/particleSize*1.1)
+       placeHeight=1;
+       placeWidth = parseInt(widthRange.value)
+       placeHeight = parseInt(heightRange.value)
 }
-canvas.addEventListener("mousemove", mouseMove)
+document.addEventListener("mousemove", mouseMove)
 
 function mouseDo() {
     mouseDown = true;
+    
 }
 function mouseUp() {
     mouseDown = false;
@@ -77,7 +90,12 @@ canvas.addEventListener("mouseup", mouseUp)
 document.onkeydown = keypress;
 function keypress(event) {
    recentKey = event.key
-   switch (recentKey) {
+placeSwitch(recentKey)
+}
+
+function placeSwitch(par) {
+
+  switch (par) {
     case "1":
          placeType = type.sand
          placeR = type.sand.r
@@ -96,24 +114,37 @@ function keypress(event) {
          placeG = type.empty.g
          placeB = type.empty.b
     break;
-    case "9":
+    case "3":
         placeType = type.huegene
          placeR = type.huegene.r
          placeG = type.huegene.g
          placeB = type.huegene.b
     break;
-		case "3":
+		case "4":
 			placeType = type.water
 			 placeR = type.water.r
 			 placeG = type.water.g
 			 placeB = type.water.b
        break;
-    case "4":
+    case "5":
         placeType = type.fire
          placeR = type.fire.r
          placeG = type.fire.g
          placeB = type.fire.b
 	break;
+  case " ":
+    gamePaused = !gamePaused;
+    break;
+    ///////////edit the width and height througth updown left right
+    case "ArrowUp":
+
+      break;
+    case "ArrowDown":
+     break;
+      case "ArrowLeft":
+     break;
+     case "ArrowRight":
+      break;
     default:
         break;
 }
@@ -286,9 +317,10 @@ this.transfer(0,-1)
       return type.empty;
     }}
     draw() {
+      if (this.type != type.empty) {
       (ctx.fillStyle != this.color) ? ctx.fillStyle = this.color: null;
       ctx.fillRect(this.x * particleSize, this.y * particleSize, particleSize, particleSize)
-    }
+    }}
   }
 
 //initalizing the particles
@@ -301,19 +333,35 @@ for (let x = 0; x < (maxX / particleSize); x++) {
     }
 }
 
-
+ 
 function drawScreen() {
+  ctx.fillStyle = "#000";
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
 
     for (let x = 0; x < particles.length; x++) {
         for (let y = 0; y < particles[x].length; y++) {
-            particles[x][y].draw();
+            
+                particles[x][y].draw()
         }
     }
+    ctx.strokeStyle = "white";
+    ctx.beginPath();
+    ctx.moveTo((mouseX+1+placeWidth /2)*particleSize,( mouseY+1+placeHeight/2 )*particleSize);
+    ctx.lineTo((mouseX+1+placeWidth /2)*particleSize,( mouseY-placeHeight/2 )*particleSize);
+    ctx.lineTo((mouseX-1-placeWidth /2)*particleSize,( mouseY-placeHeight/2 )*particleSize);
+    ctx.lineTo((mouseX-1-placeWidth /2)*particleSize,( mouseY+1+placeHeight/2 )*particleSize);
+    ctx.lineTo((mouseX+1+placeWidth /2)*particleSize,( mouseY+1+placeHeight/2 )*particleSize)
+    ctx.stroke();
 }
 
 var updateAmount = 2;
 var updateSwap = true;
 function updateScreen() {
+if (gamePaused) {
+  return;
+}
+
+
   if (updateSwap) {
     for (let i = 0; i < updateAmount; i++) {
       for (let x = particles.length-1-i; x >= 0; x -= updateAmount) {
@@ -343,22 +391,31 @@ function updateScreen() {
 updateSwap = !updateSwap
 }
 function clickInteraction() {
+
     if (mouseDown) {
-       
-        for (let i = -5; i < 5; i++) {
-            if (mouseY > 0 && mouseX + i > 0 && mouseX + i < particles.length - 1 && mouseY < particles[1].length - 1) {
+     let Xstart = placeWidth*-0.5;
+     let Xlimit = placeWidth*0.5;
+     let Ystart = placeHeight*-0.5;
+     let Ylimit = placeHeight*0.5;
 
-                particles[mouseX + i][mouseY].updateColor(placeR, placeG, placeB)
-                particles[mouseX + i][mouseY].type = placeType;
+        for (let i = Xstart-1; i <= Xlimit; i++) {
+          for (let y = Ystart; y < Ylimit+1; y++) {
+            if (mouseY+y > 0 && mouseX + i > 0 && mouseX + i < particles.length - 1 && mouseY+y < particles[1].length - 1) {
 
-                ctx.fillRect(mouseX, mouseY, 10, 10);
+                particles[mouseX + i][mouseY+y].updateColor(placeR, placeG, placeB)
+                particles[mouseX + i][mouseY+y].type = placeType;
+
+              
+            }
             }
         }
     }
 }
+
+
 function tick() {
     clickInteraction()
-    updateScreen()
+    updateScreen() 
     drawScreen();
     requestAnimationFrame(tick)
 }
