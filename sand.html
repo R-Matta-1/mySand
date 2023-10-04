@@ -62,36 +62,96 @@ button{
 }
 
 #height{
-  left: 25%;
+  left: 28%;
 }
 #widthL{
   left: 8%;
 }
 
 #heightL{
-  left: 22%;
+  left: 24%;
+}
+#hueGrav{
+top: 50%
+}
+#avatar{
+  position: fixed;
+  left: 3%;
+  width: 70px;
+  height: 30px;
+  font-family: 'Courier New', Courier, monospace;
+  font-size: small;
+  font-weight: bold;
+  border: 3px solid black;
+  top: 40%;
+}
+.hueRange {
+  -webkit-appearance: none;
+  
+right: 1%;
+ width: 90px;
+}
+.red{
+  background: rgb(252, 20, 20);
+}
+.green{
+  background: rgb(0, 194, 0);
+}
+.blue{
+  background: rgb(25, 25, 212);
+}
+.hueTraitHolder{
+  border: solid 3px black;
+  position:absolute;
+  right:0%;
+  width: 120px;
+  justify-content: center;
+ 
 }
 
     </style>
 </head>
 <body>
-    <button onclick="placeSwitch('1')"       id="sand">sand</button>
-    <button onclick="placeSwitch('2')"     id="stone">stone</button>
+    <button onclick="placeSwitch('1')"    id="sand"   >sand</button>
+    <button onclick="placeSwitch('2')"  id="stone"   >stone</button>
     <button onclick="placeSwitch('3')" id="huegene">huegene</button>
-    <button onclick="placeSwitch('4')"     id="water">water</button>
-    <button onclick="placeSwitch('5')"       id="fire">fire</button>
-    <button onclick="placeSwitch('0')"     id="empty">empty</button>
+    <button onclick="placeSwitch('4')"  id="water"   >water</button>
+    <button onclick="placeSwitch('5')"  id="fire"     >fire</button>
+    <button onclick="placeSwitch('0')"  id="empty"   >empty</button>
+
+
+    <input type="file" id="avatar" name="avatar" accept="image/png, image/jpeg" />a    
     <div>
-      <input type="range" class="range" id="width" name="width" min="2" max="200" step="2" value="10" />
+      <input type="range" class="range" id="width" name="width" min="1" max="200" step="1" value="10" />
       <label class="range" id="widthL" for="width">width</label>
 
-      <input type="range" class="range" id="height" name="height" min="2" max="200" step="2" value="10" />
+      <input type="range" class="range" id="height" name="height" min="1" max="200" step="1" value="10" />
       <label class="range" id="heightL"   for="height">height</label>
     </div>
 
+  <button id="hueGrav" onclick="hueGrav()">hueGrav?</button>
+
  <canvas id="c"></canvas>
 
- 
+ <div class="hueTraitHolder">
+<input class="hueRange red" id="Rrand" onchange="sliderUpdate()" min="0" max="60" value="30" type="range" orient="vertical">
+<input class="hueRange red" id="Rmin" onchange="sliderUpdate()" min="0" max="255" value="0" type="range" orient="vertical">
+<input class="hueRange red" id="Rmax" onchange="sliderUpdate()" min="0" max="255" value="255" type="range" orient="vertical">
+<br>
+<br>
+<input class="hueRange green" id="Grand" onchange="sliderUpdate()" min="0" max="60" value="30" type="range" orient="vertical">
+<input class="hueRange green" id="Gmin" onchange="sliderUpdate()" min="0" max="255" value="0" type="range" orient="vertical">
+<input class="hueRange green" id="Gmax" onchange="sliderUpdate()" min="0" max="255" value="255" type="range" orient="vertical">
+<br>
+<br>
+
+<input class="hueRange blue" id="Brand" onchange="sliderUpdate()" min="0" max="60" value="30" type="range" orient="vertical">
+<input class="hueRange blue" id="Bmin" onchange="sliderUpdate()" min="0" max="255" value="0" type="range" orient="vertical">
+<input class="hueRange blue" id="Bmax" onchange="sliderUpdate()"  min="0" max="255" value="255" type="range" orient="vertical">
+<br>
+<br>
+randomness<br>min<br>max
+</div>
 <script src="script.js">
 </script>
 </body>

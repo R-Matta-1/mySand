@@ -1,4 +1,9 @@
-const particleSize = 5;
+var particleSize = prompt("what size should each pixel be? \n 5 is the average and defualt");
+if (particleSize ==null) {
+  particleSize = 5;
+}
+
+
 const maxX = 1000 - particleSize;
 const maxY = 500 - particleSize;
 
@@ -23,9 +28,9 @@ const type = {
     },
     huegene:{
           //212, 19, 255
-        r:212,
-        g:19,
-        b:255,
+        r:200,
+        g:200,
+        b:200,
         density:1,
     },
 		water:{
@@ -61,12 +66,40 @@ var mouseY = 0;
 var mouseDown = false;
 var recentKey = 0;
 var gamePaused = false;
+var huegeneSand = true;
 
 var placeType = type.sand
 var placeR = type.sand.r
 var placeG = type.sand.g
 var placeB = type.sand.b
-//////////////////////////////event listner land////////////////
+//////////////////////////////event listner ////////////////
+var RrandRange = document.getElementById("Rrand")
+var RminRange = document.getElementById("Rmin")
+var RmaxRange = document.getElementById("Rmax")
+
+var GrandRange = document.getElementById("Grand")
+var GminRange = document.getElementById("Gmin")
+var GmaxRange = document.getElementById("Gmax")
+
+var BrandRange = document.getElementById("Brand")
+var BminRange = document.getElementById("Bmin")
+var BmaxRange = document.getElementById("Bmax")
+
+function sliderUpdate() {
+  RhueRand = parseInt(RrandRange.value)
+  RHueMin = parseInt(RminRange.value)
+  RHueMax = parseInt(RmaxRange.value)
+
+  GhueRand = parseInt(GrandRange.value)
+  GHueMin = parseInt(GminRange.value)
+  GHueMax = parseInt(GmaxRange.value)
+
+  BhueRand = parseInt(BrandRange.value)
+  BHueMin = parseInt(BminRange.value)
+  BHueMax = parseInt(BmaxRange.value)
+
+}
+
 function mouseMove(event) {
   
        mouseX =Math.floor((event.clientX - canvas.offsetLeft)/particleSize*1.1)
@@ -137,19 +170,34 @@ function placeSwitch(par) {
     break;
     ///////////edit the width and height througth updown left right
     case "ArrowUp":
-
+      heightRange.value = (parseInt(heightRange.value)+10).toString()
+    
+      placeHeight = parseInt(heightRange.value)
       break;
     case "ArrowDown":
+      heightRange.value = (parseInt(heightRange.value)-10).toString()
+      placeHeight = parseInt(heightRange.value)
      break;
       case "ArrowLeft":
+        widthRange.value = (parseInt(widthRange.value)-10).toString()
+        placeWidth = parseInt(widthRange.value)
      break;
      case "ArrowRight":
+      widthRange.value = (parseInt(widthRange.value)+10).toString()
+      placeWidth = parseInt(widthRange.value)
       break;
     default:
         break;
 }
 }
-//////////////////////////////event listner land End////////////////
+function hueGrav(){
+  huegeneSand = !huegeneSand;
+}
+
+var RhueRand =30; var GhueRand =30; var BhueRand=30;
+var RHueMin = 0 ; var GHueMin = 0 ; var BHueMin = 0;
+var RHueMax =255; var GHueMax =255; var BHueMax =255;
+//////////////////////////////event listner End////////////////
 
 
 
@@ -190,7 +238,7 @@ class particle {
           break;
           ////////////////////////////////////////////////////////
         case type.huegene:
-     
+     if (huegeneSand) {//do grav
       if (this.checkType(0, 1) == type.empty) {  //grav
             this.transfer(0, 1);
             break;
@@ -208,28 +256,33 @@ class particle {
           if (RDhu) {
             (Math.random() > type.sand.density) ? this.transfer(1, 1): null;
             break;
-         }
-          let randR = Math.max(Math.min(this.r + Math.floor((Math.random() * 50) - 25), 255), 0);
-          let randG = Math.max(Math.min(this.g + Math.floor((Math.random() * 50) - 25), 255), 0);
-          let randB = Math.max(Math.min(this.b + Math.floor((Math.random() * 50) - 25), 255), 0);
+         }}
+         let randR = Math.max(Math.min(this.r + Math.floor((Math.random() * RhueRand) - RhueRand/2), RHueMax), RHueMin);
+         let randG = Math.max(Math.min(this.g + Math.floor((Math.random() * GhueRand) - GhueRand/2), GHueMax), GHueMin);
+         let randB = Math.max(Math.min(this.b + Math.floor((Math.random() * BhueRand) - BhueRand/2), BHueMax), BHueMin);
+
           switch (Math.floor(Math.random() * 4)) {
             case 0:
               if (this.checkType(0, 1) == type.empty) {
+
                 this.place(0,1, randR, randG, randB, type.huegene)
               }
               break;
             case 1:
               if (this.checkType(1, 0) == type.empty) {
+
                 this.place(1, 0, randR, randG, randB, type.huegene)
               }
               break;
             case 2:
               if (this.checkType(0, -1) == type.empty) {
+
                 this.place(0, -1, randR, randG, randB, type.huegene)
               }
               break;
             case 3:
               if (this.checkType(-1, 0) == type.empty) {
+
                 this.place(-1, 0, randR, randG, randB, type.huegene)
               }
               break;
@@ -241,9 +294,10 @@ class particle {
 	   case type.water:
 if (this.checkType(0,1) == type.empty) {
 	this.transfer(0,1);
+  break;
 }
 let LDwa = (this.checkType(-1, 0) == type.empty)
-              let RDwa = (this.checkType(1, 0) == type.empty)
+let RDwa = (this.checkType(1, 0) == type.empty)
 if (LDwa && RDwa) {
 	(Math.random() > .5) ? this.transfer(1, 0): this.transfer(-1, 0);
 	break;
@@ -318,8 +372,12 @@ this.transfer(0,-1)
     }}
     draw() {
       if (this.type != type.empty) {
+
+       
+
       (ctx.fillStyle != this.color) ? ctx.fillStyle = this.color: null;
       ctx.fillRect(this.x * particleSize, this.y * particleSize, particleSize, particleSize)
+
     }}
   }
 
@@ -393,10 +451,10 @@ updateSwap = !updateSwap
 function clickInteraction() {
 
     if (mouseDown) {
-     let Xstart = placeWidth*-0.5;
-     let Xlimit = placeWidth*0.5;
-     let Ystart = placeHeight*-0.5;
-     let Ylimit = placeHeight*0.5;
+     let Xstart = Math.floor(placeWidth*-0.5);
+     let Xlimit = Math.floor(placeWidth*0.5);
+     let Ystart = Math.floor(placeHeight*-0.5);
+     let Ylimit = Math.floor(placeHeight*0.5);
 
         for (let i = Xstart-1; i <= Xlimit; i++) {
           for (let y = Ystart; y < Ylimit+1; y++) {
