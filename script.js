@@ -48,16 +48,29 @@ const type = {
       }
   }
 
-var canvas = document.getElementById("c")
+const canvas = document.getElementById("c")
 var ctx = canvas.getContext("2d",{alpha:false});
 
 ctx.imageSmoothingEnabled = false;
 canvas.width = maxX;
 canvas.height = maxY;
-var ctxImg = ctx.getImageData(0,0,canvas.width,canvas.height)
 
-var widthRange = document.getElementById("width")
-var heightRange = document.getElementById("height")
+var ctxImg = ctx.createImageData(canvas.width, canvas.height)
+for (let i = 0; i < ctxImg.data.length; i+=4) {
+    ctxImg.data[i] = 1;
+    ctxImg.data[i + 1] = 1;
+    ctxImg.data[i+2] = 1;
+    ctxImg.data[i+3] = 255;
+}
+
+
+const widthRange = document.getElementById("width")
+const heightRange = document.getElementById("height")
+const hueRdisc = document.getElementById("hueRdisc")
+const hueGdisc = document.getElementById("hueGdisc")
+const hueBdisc = document.getElementById("hueBdisc")
+
+
 var placeWidth = 10;
 var placeHeight = 1;
 var placeHeightDensity = 1;
@@ -74,7 +87,9 @@ var placeType = type.sand
 var placeR = type.sand.r
 var placeG = type.sand.g
 var placeB = type.sand.b
+
 //////////////////////////////event listner ////////////////
+
 var RrandRange = document.getElementById("Rrand")
 var RminRange = document.getElementById("Rmin")
 var RmaxRange = document.getElementById("Rmax")
@@ -90,15 +105,22 @@ var BmaxRange = document.getElementById("Bmax")
 function sliderUpdate() {
   RhueRand = parseInt(RrandRange.value)
   RHueMin = parseInt(RminRange.value)
-  RHueMax = parseInt(RmaxRange.value)
+    RHueMax = parseInt(RmaxRange.value)
+    hueRdisc.innerHTML = "red min " + RminRange.value + "-" + RmaxRange.value + "<br> at " + RrandRange.value +"  change"
+
+
 
   GhueRand = parseInt(GrandRange.value)
   GHueMin = parseInt(GminRange.value)
-  GHueMax = parseInt(GmaxRange.value)
+    GHueMax = parseInt(GmaxRange.value)
+    hueGdisc.innerHTML = "green min" + GminRange.value + "-" + GmaxRange.value + " <br>at " + GrandRange.value + "  change"
+
 
   BhueRand = parseInt(BrandRange.value)
   BHueMin = parseInt(BminRange.value)
-  BHueMax = parseInt(BmaxRange.value)
+    BHueMax = parseInt(BmaxRange.value)
+    hueBdisc.innerHTML = "blue min" + BminRange.value + "-" + BmaxRange.value + "<br> at " + BrandRange.value + "  change"
+
 
 }
 
@@ -376,9 +398,9 @@ this.transfer(0,-1)
       if (this.type != type.empty) {
 
        
-      (ctx.fillStyle != this.color) ? ctx.fillStyle = this.color: null;
-      ctx.fillRect(this.x * particleSize, this.y * particleSize, particleSize, particleSize)
-
+     // (ctx.fillStyle != this.color) ? ctx.fillStyle = this.color: null;
+          // ctx.fillRect(this.x * particleSize, this.y * particleSize, particleSize, particleSize)
+          ctxImg.data[(this.y * particleSize) * (canvas.width * 4) + (this.x * particleSize) * 4] = this.r
     }}
   }
 
@@ -404,7 +426,9 @@ function drawScreen() {
                 particles[x][y].draw()
         }
     } 
-    //ctx.closePath()
+   // console.log(ctxImg)
+    ctx.putImageData(ctxImg, 0, 0)
+
     ctx.strokeStyle = "white";
     ctx.beginPath();
     ctx.moveTo((mouseX+1+placeWidth /2)*particleSize,( mouseY+1+placeHeight/2 )*particleSize);
