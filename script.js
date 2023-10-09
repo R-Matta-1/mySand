@@ -50,9 +50,11 @@ const type = {
 
 var canvas = document.getElementById("c")
 var ctx = canvas.getContext("2d",{alpha:false});
+
 ctx.imageSmoothingEnabled = false;
 canvas.width = maxX;
 canvas.height = maxY;
+var ctxImg = ctx.getImageData(0,0,canvas.width,canvas.height)
 
 var widthRange = document.getElementById("width")
 var heightRange = document.getElementById("height")
@@ -374,7 +376,6 @@ this.transfer(0,-1)
       if (this.type != type.empty) {
 
        
-
       (ctx.fillStyle != this.color) ? ctx.fillStyle = this.color: null;
       ctx.fillRect(this.x * particleSize, this.y * particleSize, particleSize, particleSize)
 
@@ -396,12 +397,14 @@ function drawScreen() {
   ctx.fillStyle = "#000";
   ctx.fillRect(0, 0, canvas.width, canvas.height);
 
+  //ctx.beginPath()
     for (let x = 0; x < particles.length; x++) {
         for (let y = 0; y < particles[x].length; y++) {
             
                 particles[x][y].draw()
         }
-    }
+    } 
+    //ctx.closePath()
     ctx.strokeStyle = "white";
     ctx.beginPath();
     ctx.moveTo((mouseX+1+placeWidth /2)*particleSize,( mouseY+1+placeHeight/2 )*particleSize);
@@ -410,6 +413,12 @@ function drawScreen() {
     ctx.lineTo((mouseX-1-placeWidth /2)*particleSize,( mouseY+1+placeHeight/2 )*particleSize);
     ctx.lineTo((mouseX+1+placeWidth /2)*particleSize,( mouseY+1+placeHeight/2 )*particleSize)
     ctx.stroke();
+    ctx.font = "20px mono";
+ctx.textBaseline = "hanging";
+ctx.strokeStyle = "red"
+ctx.strokeText(ctxImg.width.toString(), 500, 100);
+ctx.strokeText(canvas.width.toString(), 500, 200);
+
 }
 
 var updateAmount = 2;
@@ -464,10 +473,10 @@ function clickInteraction() {
                 particles[mouseX + i][mouseY+y].type = placeType;
 
               
-            }
-            }
-        }
-    }
+            }//
+            } //YlistEnd
+        }   //XlistEnd
+    } //muosedown{
 }
 
 
