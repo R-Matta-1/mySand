@@ -400,7 +400,9 @@ this.transfer(0,-1)
        
      // (ctx.fillStyle != this.color) ? ctx.fillStyle = this.color: null;
           // ctx.fillRect(this.x * particleSize, this.y * particleSize, particleSize, particleSize)
-          ctxImg.data[(this.y * particleSize) * (canvas.width * 4) + (this.x * particleSize) * 4] = this.r
+          ctxImg.data[((this.y * particleSize) * (canvas.width * 4) + (this.x * particleSize) * 4)] = this.r
+          ctxImg.data[((this.y * particleSize) * (canvas.width * 4) + (this.x * particleSize) * 4)+1] = this.g  
+          ctxImg.data[((this.y * particleSize) * (canvas.width * 4) + (this.x * particleSize) * 4)+2] = this.b
     }}
   }
 
