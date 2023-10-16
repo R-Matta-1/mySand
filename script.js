@@ -1,8 +1,10 @@
 var particleSize = prompt("what size should each pixel be? \n 5 is the average and defualt");
-if (particleSize ==null) {
+
+particleSize = parseInt(particleSize)
+if (particleSize<1 ||isNaN(particleSize)) {
   particleSize = 5;
 }
-
+//Math.floor(particleSize)
 
 const maxX = 1000 - particleSize;
 const maxY = 500 - particleSize;
@@ -28,9 +30,9 @@ const type = {
     },
     huegene:{
           //212, 19, 255
-        r:200,
-        g:200,
-        b:200,
+        r:127, 
+        g:127,
+        b:127,
         density:1,
     },
 		water:{
@@ -397,12 +399,13 @@ this.transfer(0,-1)
     draw() {
       if (this.type != type.empty) {
 
-       
-     // (ctx.fillStyle != this.color) ? ctx.fillStyle = this.color: null;
-          // ctx.fillRect(this.x * particleSize, this.y * particleSize, particleSize, particleSize)
-          ctxImg.data[((this.y * particleSize) * (canvas.width * 4) + (this.x * particleSize) * 4)] = this.r
-          ctxImg.data[((this.y * particleSize) * (canvas.width * 4) + (this.x * particleSize) * 4)+1] = this.g  
-          ctxImg.data[((this.y * particleSize) * (canvas.width * 4) + (this.x * particleSize) * 4)+2] = this.b
+  for (let iy = 0; iy < particleSize; iy++) {
+    for (let ix = 0; ix < particleSize; ix++) {
+   ctxImg.data[(((this.y * particleSize) +iy)* (canvas.width * 4) + (this.x * particleSize+ix) * 4)] = this.r
+   ctxImg.data[(((this.y * particleSize) +iy)* (canvas.width * 4) + (this.x * particleSize+ix) * 4)+1] = this.g  
+   ctxImg.data[(((this.y * particleSize) +iy)* (canvas.width * 4) + (this.x * particleSize+ix) * 4)+2] = this.b
+    }}
+
     }}
   }
 
@@ -418,17 +421,47 @@ for (let x = 0; x < (maxX / particleSize); x++) {
 
  
 function drawScreen() {
-  ctx.fillStyle = "#000";
-  ctx.fillRect(0, 0, canvas.width, canvas.height);
+  for (let i = 0; i < ctxImg.data.length; i += 4) {
+    ctxImg.data[i] = 0;
+    ctxImg.data[i + 1] = 0;
+    ctxImg.data[i + 2] = 0;
+    ctxImg.data[i + 3] = 255;
+  }
+  /*   for (let x = 0; x < particles.length; x++) {
+         for (let y = 0; y < particles[x].length; y++) {
+                 particles[x][y].draw()
+         }
+     } */
 
-  //ctx.beginPath()
-    for (let x = 0; x < particles.length; x++) {
-        for (let y = 0; y < particles[x].length; y++) {
-            
-                particles[x][y].draw()
-        }
-    } 
-   // console.log(ctxImg)
+  let curR = 0
+  let curG = 0
+  let curB = 0
+  let iDivFour = 0;
+
+  for (let i = 0; i < ctxImg.data.length; i += 4) {
+
+    if (iDivFour % particleSize == 0) {
+      let findX = Math.floor(iDivFour % ctxImg.width / particleSize)
+      let findY = Math.floor(iDivFour / ctxImg.width / particleSize)
+
+      if (particles[findX][findY].type != type.empty) {
+        curR = particles[findX][findY].r;
+        curG = particles[findX][findY].g;
+        curB = particles[findX][findY].b;
+      }
+      else {
+        iDivFour += particleSize
+        i += (particleSize - 1) * 4
+        continue;
+      }
+    }
+    ctxImg.data[i] = curR
+    ctxImg.data[i + 1] = curG
+    ctxImg.data[i + 2] = curB
+    iDivFour++
+  }
+  
+  
     ctx.putImageData(ctxImg, 0, 0)
 
     ctx.strokeStyle = "white";
@@ -442,8 +475,8 @@ function drawScreen() {
     ctx.font = "20px mono";
 ctx.textBaseline = "hanging";
 ctx.strokeStyle = "red"
-ctx.strokeText(ctxImg.width.toString(), 500, 100);
-ctx.strokeText(canvas.width.toString(), 500, 200);
+//ctx.strokeText(ctxImg.width.toString(), 500, 100);
+//ctx.strokeText(canvas.width.toString(), 500, 200);
 
 }
 
@@ -505,7 +538,6 @@ function clickInteraction() {
     } //muosedown{
 }
 
-
 function tick() {
     clickInteraction()
     updateScreen() 
@@ -513,3 +545,4 @@ function tick() {
     requestAnimationFrame(tick)
 }
 tick();
+
