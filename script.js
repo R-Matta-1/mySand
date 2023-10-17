@@ -30,9 +30,9 @@ const type = {
     },
     huegene:{
           //212, 19, 255
-        r:127, 
-        g:127,
-        b:127,
+        r:200, 
+        g:200,
+        b:200,
         density:1,
     },
 		water:{

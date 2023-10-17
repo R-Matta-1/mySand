@@ -18,8 +18,8 @@ body{
         padding:none; 
         }
 button{
-  position: fixed;
-  left: 3%;
+ /* position: fixed;
+  left: 3%;*/
   width: 70px;
   height: 30px;
   font-family: 'Courier New', Courier, monospace;
@@ -28,29 +28,29 @@ button{
   border: 3px solid black;
 }
 #sand{
-  top: 4%;
+ 
  background-color: rgb(195, 235, 17);
 }
 #stone{
  background-color: rgb(119,119,119);
-  top: 10%;
+
 }
 #huegene{
  background-color: rgb(212, 19, 255);
-  top: 16%;
+ 
 }
 #water{
  background-color: rgb(44, 32, 201);
-  top: 22%;
+
 }
 #fire{
  background-color: rgb(186, 11, 11);
-  top: 28%;
+
 }
 #empty{
   background-color: rgb(0, 0, 0);
   color: azure;
-  top: 75%;
+ 
 }
 .range{
   position: absolute;
@@ -72,7 +72,15 @@ button{
   left: 24%;
 }
 #hueGrav{
-top: 50%
+  position: fixed;
+  left: 3%;
+  width: 70px;
+  height: 30px;
+  font-family: 'Courier New', Courier, monospace;
+  font-size: small; 
+  font-weight: bold;
+  border: 3px solid black;
+  top: 80%;
 }
 #avatar{
   position: fixed;
@@ -83,7 +91,7 @@ top: 50%
   font-size: small;
   font-weight: bold;
   border: 3px solid black;
-  top: 40%;
+  top: 70%;
 }
 .hueRange {
   -webkit-appearance: none;
@@ -92,10 +100,10 @@ right: 1%;
  width: 90px;
 }
 .red{
-  background: rgb(252, 20, 20);
+  background: rgb(252, 20, 20);  
 }
 .green{
-  background: rgb(0, 194, 0);
+  background: rgb(0, 194, 0);   
 }
 .blue{
   background: rgb(25, 25, 212);
@@ -111,18 +119,36 @@ right: 1%;
 p{
     font-family:monospace;
 }
+#typeHolder{
+  left: 1%;
+    border: solid 3px black;
+    column-count: 1;
+    width: 80px; /* Set a fixed width for the box */
+    height: 300px; /* Set a fixed height for the box */
+    padding: 10px; /* Add padding to the box */
+    position: absolute;
+    max-width: 100px; /* Set the minimum width of the box */
+    overflow-x: hidden; /* Hide horizontal scrollbar */
+            overflow-y: auto; 
+  justify-content: center;}
+    
+    
     </style>
 </head>
 <body>
+  <div id="typeHolder">
     <button onclick="placeSwitch('1')"    id="sand"   >sand</button>
     <button onclick="placeSwitch('2')"  id="stone"   >stone</button>
     <button onclick="placeSwitch('3')" id="huegene">huegene</button>
     <button onclick="placeSwitch('4')"  id="water"   >water</button>
     <button onclick="placeSwitch('5')"  id="fire"     >fire</button>
     <button onclick="placeSwitch('0')"  id="empty"   >empty</button>
+ 
 
 
-    <input type="file" id="avatar" name="avatar" accept="image/png, image/jpeg" />a    
+  </div>
+
+    <input type="file" id="avatar" name="avatar" accept="image/png, image/jpeg" />
     <div>
       <input type="range" class="range" id="width" name="width" min="1" max="200" step="1" value="10" />
       <label class="range" id="widthL" for="width">width</label>
@@ -131,7 +157,7 @@ p{
       <label class="range" id="heightL"   for="height">height</label>
     </div>
 
-  <button id="hueGrav" onclick="hueGrav()">hueGrav?</button>
+  <button id="hueGrav" onclick="hueGrav()">hueGrav</button>
 
  <canvas id="c"></canvas>
 
